@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -102,12 +104,74 @@
     </style>
 </head>
 <body>
+
+
 <?php 
     include('partials/nav.php');
     // $examObj->admin_session_public(); 
-    $examObj->Check_exam_status();
- 
+?>
 
+          <div class="fixed-action-btn click-to-toggle">
+            <a class="btn-floating btn-large red">
+              <i class="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+            <li><a class="btn-floating red circ" href="user_login.php">Login</a></li>
+              <li><a class="btn-floating green circ" href="https://tkh.edu.eg">TKH</a></li>
+              <li><a class="btn-floating blue circ" href="index.php">Home</a></li>
+            </ul>
+          </div>
+<!-- <script>
+
+function sendDataToPage(uri, form, config) {
+    var formdata = "";
+    if (form) {
+        formdata = new FormData(form);
+    }
+    let api = axios.create({ basicurl: 'http://52.7.174.33:80' });
+    return api.post(uri, formdata, config);
+}
+
+    (async function () {
+
+
+        var curr_datetime = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
+
+        let axioxParams = {
+            params: {
+                action: 'getDate',
+                curr_datetime: curr_datetime
+            }
+        };
+
+        await sendDataToPage('/rec_date.php', "", axioxParams)
+            .then(data => {
+                let status = data.data.status;
+                if (status == "success") {
+                    console.log(data.data);
+                    // document.cookie = `timestamp=${data.data.date}`;
+                    console.log('done');
+
+                    // document.getElementById('datee').value = data.data.date;
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+    })();
+    
+</script> -->
+
+
+<?php
+
+    // $currDT = $examObj->get_current_date_time($current_id, $type) ; 
+    // $curr_date_time = $currDT[0]['curr_date_time']; 
+
+    // $date = new DateTime("now", new DateTimeZone($current_timezone));
+    // $curr_date_time = $date->format('Y-m-d H:i:s');
+    $examObj->Check_exam_status($current_timezone);
 ?>    
 
 <?php  if ($type != 'admin'){ ?>
@@ -399,6 +463,8 @@
 
     <script src="js/modalBox.js">  </script>
       <script src="js/hammenu.js">  </script>
+            <script src="js/clickFAB.js" type="text/javascript">      </script>
+
       <script src="js/add_exam_ajax.js">  </script>
       <script>
           // for main modal box 

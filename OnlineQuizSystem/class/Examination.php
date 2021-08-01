@@ -18,9 +18,9 @@ class Examination{
 		$this->startSesssion = $sessionflag; 
         $this->host = 'localhost';
         $this->username = 'root';
-        $this->password = '';
+        $this->password = 'dubai2006';
         $this->database = 'online_assessment';
-        $this->home_page = 'http://localhost/OnlineQuizSystem/';
+        $this->home_page = '52.7.174.33/';
         $this->connect= new PDO("mysql:host=$this->host; dbname=$this->database", $this->username, $this->password);
         if ($sessionflag){
 		session_start(); 
@@ -264,17 +264,33 @@ class Examination{
 	}
 
 
-	function Check_exam_status()
+	function Check_exam_status($current_timezone)
 	{
 		// $this->data = array(); 
+		// echo 'CURRENT TIME NOWWWW: ' . $curr_date_time  ;
 
+		// echo 'ORIGINAL: ' . $curr_date_time . '<br><br>';
+		// echo "TYPE: " . gettype($curr_date_time) . '<br>'; 
+		// $curr_date_time =  str_replace( '-', '/',$curr_date_time);
+		// echo 'After string replace: ' . $curr_date_time . '<br><br>';
+		
+		
+		// $temp = strtotime($curr_date_time) ; 
+		// $current_datetime = date('Y-m-d H:i:s', $temp)  ;
+
+		$date = new DateTime("now", new DateTimeZone($current_timezone));
+		$current_datetime = $date->format('Y-m-d H:i:s');
+		
 		$ret_val = "unchanged"; 
 
 		$this->query = "SELECT * FROM online_exam_table";
 
 		$result = $this->query_result();
 
-		$current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')));
+		// $current_datetime = $curr_date_time;
+		// $current_datetime = date('Y-m-d H:i:s', strtotime($curr_date_time))  ;
+		// echo 'CURR Time NOOOOOOWWW: ' . $current_datetime . '<br><br>'; 
+
 
 		foreach($result as $row)
 		{
@@ -330,6 +346,12 @@ class Examination{
 			{
 				if($current_datetime > $exam_end_time)
 				{
+
+			// echo 'CURR Time: ' . $current_datetime . '<br>'; 
+			// echo 'Exam Start Time: ' .$exam_start_time . '<br>'; 
+			// echo 'Exam End Time: ' .$exam_end_time . '<br>'; 
+			// echo 'title: '  . $row["online_exam_title"] ; 
+
 					//exam completed
 					$this->data = array(
 						':online_exam_status'	=>	'Completed',
@@ -347,24 +369,10 @@ class Examination{
 
 				} else if ($current_datetime < $exam_end_time) {
 
-					// TO BE COMMENTED: This snippet just to test that the reset is disbaled while the exam has started 
-						// if it has started then don't update anything 
-						// $this->data = array(
-						// 	':exam_id' => $row['online_exam_id']
-						// );
-
-						// $this->query = "
-						// SELECT online_exam_status
-						// FROM online_exam_table
-						// WHERE online_exam_id = :exam_id;";
-
-						// $result = $this->query_result();
-						// $exam_status = $result[0]['online_exam_status'];
-
-						// if ($exam_status == "Started"){
-						// 	// $ret_val = "Started";
-						// 	continue;
-						// }
+			// echo 'CURR Time: ' . $current_datetime . '<br>'; 
+			// echo 'Exam Start Time: ' .$exam_start_time . '<br>'; 
+			// echo 'Exam End Time: ' .$exam_end_time . '<br>'; 
+			// echo 'title: '  . $row["online_exam_title"] ; 
 
 					//--------------------------------------------------------------
 					// check if exam time is yet to come AND qeuestion are fully populated 
@@ -413,7 +421,7 @@ class Examination{
 	}
 
 	
-	function Check_exam_status_v2($exam_id)
+	function Check_exam_status_v2($exam_id,$current_timezone)
 	{
 		$ret_val = "unchanged"; 
 
@@ -425,8 +433,13 @@ class Examination{
 
 		$result = $this->query_result();
 
-		$current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')));
+		// $current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')));
+		// $current_datetime = $curr_date_time  ;
+		
+			$date = new DateTime("now", new DateTimeZone($current_timezone));
+    		$current_datetime = $date->format('Y-m-d H:i:s');
 
+		// $current_datetime = date('Y-m-d H:i:s', strtotime($curr_date_time))  ;
 			$exam_start_time = $result[0]["online_exam_datetime"];
 
 			$duration = $result[0]["online_exam_duration"] . ' minute';
@@ -439,9 +452,13 @@ class Examination{
 
 			if($current_datetime >= $exam_start_time && $current_datetime <= $exam_end_time)
 			{ // this should be checked periodically on exam.php (admin side) and user_enroll.php (user side)
-				
 				//check if exam was exam started; which will only be doable via pressing the button
 				// if it has started then don't update anything 
+
+			// echo 'CURR Time: ' . $current_datetime . '<br>'; 
+			// echo 'Exam Start Time: ' .$exam_start_time . '<br>'; 
+			// echo 'Exam End Time: ' .$exam_end_time . '<br>'; 
+			// echo 'title: '  . $result[0]["online_exam_title"] ; 
 				$this->data = array(
 					':exam_id' => $exam_id
 				);
@@ -492,6 +509,8 @@ class Examination{
 					WHERE online_exam_id = :exam_id;";
 
 					$ret_val = "completed";
+
+
 
 
 					$this->execute_query();
@@ -558,11 +577,12 @@ class Examination{
 
 		}
 
-		function update_Avail_Start_button($exam_id){
+		function update_Avail_Start_button($exam_id, $current_timezone){
 			// NOTE: Reset should only reset the datetime time 
 			// and it should work if the exam was available now, not started yet/created
 			$ret_val = "" ; 
-			$ret_val = $this->Check_exam_status_v2( $exam_id ) ;
+			$ret_val = $this->Check_exam_status_v2( $exam_id,$current_timezone ) ;
+			// print_r($ret_val);
 
 			if  ($ret_val == "not_started") {
 				return array('<a style="font-size:10px; padding-top:10px; padding-bottom:5px; line-height:15px" id="' . $exam_id . '" name="make_available" class="waves-effect waves-light btn  pink make_available">Make Available</a><br>',
@@ -662,6 +682,46 @@ class Examination{
 			{
 				return $row["attendance_status"];
 			}
+		}
+
+
+		function get_current_date_time($memberId,$type){
+				$table = '' ; 
+				$memberType_Id = ""; 
+				
+				$this-> data = array(
+                    ':member_id' => intval($memberId)
+                );
+				
+				if ($type == 'user'){
+					$table = "date_time_users" ;
+					$memberType_Id = 'userId' ;  
+
+				} else if ($type == 'admin'){
+					$table = "date_time_admins" ;
+					$memberType_Id = 'adminId' ;  
+
+
+				} else {
+					return 'no type detected' ; 
+				}
+
+				$this->query = "
+				SELECT curr_date_time 
+				FROM " . $table . "
+				WHERE " .  $memberType_Id . " = :member_id" ;  
+                ;
+				// $this->query = "
+				// SELECT curr_date_time 
+				// FROM date_time_admins
+				// WHERE adminId = :member_id;" ;  
+                // ;
+
+				// print_r($this->query) ; 
+                return $this->query_result();
+
+
+
 		}
 };
 ?>

@@ -171,9 +171,9 @@ if ($_POST['action'] == 'fetch'){
 
 				}
 
-				$make_available_button = $exam->update_Avail_Start_button($row['online_exam_id'])[0];
-				$force_start_button = $exam->update_Avail_Start_button($row['online_exam_id'])[1];
-				$reset_button = $exam->update_Avail_Start_button($row['online_exam_id'])[3];
+				$make_available_button = $exam->update_Avail_Start_button($row['online_exam_id'], $_POST['timezone'])[0];
+				$force_start_button = $exam->update_Avail_Start_button($row['online_exam_id'],$_POST['timezone'])[1];
+				$reset_button = $exam->update_Avail_Start_button($row['online_exam_id'],$_POST['timezone'])[3];
 
 				// as long as the exam is not started; the reset button will be available
 				// if it had started, this it should be disabled 

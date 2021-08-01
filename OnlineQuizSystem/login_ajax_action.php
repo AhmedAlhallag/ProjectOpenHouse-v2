@@ -27,6 +27,11 @@ if ($_POST['action'] == 'login'){
             setcookie("type", $_SESSION['type'], time() + (86400 * 30), "/"); // 86400 = 1 day
 
             $_SESSION['admin_email_address'] = $row[0]['admin_email_address'];
+
+            $timezone_name = $_REQUEST['timezone'];
+
+            $_SESSION['timezone'] =  $timezone_name ; 
+            
             echo json_encode($debug);
             
 

@@ -35,6 +35,7 @@ if (isset($_POST)){
             $this_exam_datetime  =  $row['online_exam_datetime'] ; 
 
            $datetime = explode(" ", $row['online_exam_datetime']); 
+           
            // get date 
            $date = new DateTime($datetime[0]);
            $date = $date -> format('Y-m-d');
@@ -62,10 +63,12 @@ if (isset($_POST)){
 
     if ($_REQUEST['action'] == "make_available"){
         // print_r($_REQUEST);
+    $date = new DateTime("now", new DateTimeZone($_REQUEST['timezone']));
+    $curr_date_time = $date->format('Y-m-d H:i:s');
+
         $exam-> data = array(
             ":exam_id" => $_REQUEST['examid'],
-            ':curr_datetime' => $_REQUEST['curr_datetime']
-
+            ':curr_datetime' => $curr_date_time
         );
 
         $exam -> query = "
@@ -95,15 +98,15 @@ if (isset($_POST)){
         // update buttons
         $ret_val = "" ;
         $exam_status = "" ;  
-        if (!empty($exam->update_Avail_Start_button($_REQUEST['examid']))){
+        if (!empty($exam->update_Avail_Start_button($_REQUEST['examid'],$_REQUEST['timezone']   ))){
             $ret_val = "update_buttons";
-            $exam_status = $exam->update_Avail_Start_button($_REQUEST['examid'])[2];
+            $exam_status = $exam->update_Avail_Start_button($_REQUEST['examid'],$_REQUEST['timezone'])[2];
             $title = $result[0]['online_exam_title'];
             
 
         }
         // $force_start = $exam->update_Avail_Start_button($_REQUEST['examid'])[1];
-        $debug = ["status" => "success", 'details' => "Exam is available now", 'after_edit_check' => $ret_val , "exam_status" => $exam_status, "title" => $title]; 
+        $debug = ["status" => "success", 'details' => "Exam is available now",'after_edit_check' => $ret_val , "exam_status" => $exam_status, "title" => $title]; 
         // print_r($_POST);
         echo json_encode($debug);
 
@@ -116,7 +119,7 @@ if (isset($_POST)){
     if ($_REQUEST['action'] == "reset_exam"){
         $exam-> data = array(
             ":exam_id" => $_REQUEST['examid'],
-            ':curr_datetime' => $_REQUEST['curr_datetime']
+            ':curr_datetime' => $_REQUEST['reset_datetime']
 
         );
 
@@ -147,9 +150,9 @@ if (isset($_POST)){
         // update buttons
         $ret_val = "" ;
         $exam_status = "" ;  
-        if (!empty($exam->update_Avail_Start_button($_REQUEST['examid']))){
+        if (!empty($exam->update_Avail_Start_button($_REQUEST['examid'],$_REQUEST['timezone']))){
             $ret_val = "update_buttons";
-            $exam_status = $exam->update_Avail_Start_button($_REQUEST['examid'])[2];
+            $exam_status = $exam->update_Avail_Start_button($_REQUEST['examid'],$_REQUEST['timezone'])[2];
             $title = $result[0]['online_exam_title'];
             
 
@@ -167,9 +170,13 @@ if (isset($_POST)){
     }
 
     if ($_REQUEST['action'] == "force_start"){
+
+        $date = new DateTime("now", new DateTimeZone($_REQUEST['timezone']));
+        $curr_date_time = $date->format('Y-m-d H:i:s');
+
         $exam-> data = array(
             ":exam_id" => $_REQUEST['examid'],
-            ':curr_datetime' => $_REQUEST['curr_datetime']
+            ':curr_datetime' => $curr_date_time
 
         );
 
@@ -186,9 +193,9 @@ if (isset($_POST)){
         // update buttons
         $ret_val = "" ;
         $exam_status = "" ;  
-        if (!empty($exam->update_Avail_Start_button($_REQUEST['examid']))){
+        if (!empty($exam->update_Avail_Start_button($_REQUEST['examid'],$_REQUEST['timezone']))){
             $ret_val = "update_buttons";
-            $exam_status = $exam->update_Avail_Start_button($_REQUEST['examid'])[2];
+            $exam_status = $exam->update_Avail_Start_button($_REQUEST['examid'],$_REQUEST['timezone'])[2];
         }
 
         // $force_start = $exam->update_Avail_Start_button($_REQUEST['examid'])[1];
@@ -230,7 +237,7 @@ if (isset($_POST)){
             
             // check if datetime changed (OR duration), or change exam status 
             if ( ($this_edited_datetime != $this_exam_datetime) or ($this_edited_duration != $this_exam_duration) ){
-                $ret_val = $exam->Check_exam_status_v2($_POST['online_exam_id']);
+                $ret_val = $exam->Check_exam_status_v2($_POST['online_exam_id'],$_REQUEST['timezone']);
 
             }  
             

@@ -4,7 +4,7 @@ include('class/Examination.php');
 
 $examObj = new Examination();
 
-$current_id = $current_email = $current_username = $type = "" ;
+$current_id = $current_email = $current_username = $type = $current_timezone =  "" ;
 
 
 
@@ -14,14 +14,21 @@ if (isset($_SESSION['type'])) {
     if ($type == "admin") {
         $current_id = $_SESSION['admin_id'];
         $current_email = $_SESSION['admin_email_address'];
+        $current_timezone =  $_SESSION['timezone'] ; 
       }
   else if ($type == "user") {
       $current_id = $_SESSION['user_id'];
       $current_email = $_SESSION['user_email_address'];
       $current_username =  $_SESSION['username'];
+      $current_timezone =  $_SESSION['timezone'] ; 
+
 
   }
-} 
+}
+// so that time() would work proberly 
+date_default_timezone_set($current_timezone);
+
+// echo "TIMEZONE: "  . $current_timezone;
 
 // echo "Email: $current_email<br>";
 // echo "Type: $type<br>"
@@ -44,7 +51,7 @@ if (empty($current_id)){ ?>
   <nav class="#ff6d00 orange accent-4">
     <div class="container">
       <div class="nav-wrapper">
-        <a href="index.php" class="brand-logo heading">Online Quiz System</a>
+        <a href="index.php" style='font-size:13px' class="brand-logo heading">Project: OpenHouse v1.3.1</a>
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
          <ul class="right hide-on-med-and-down">
 
@@ -52,7 +59,7 @@ if (empty($current_id)){ ?>
                   <a href="index.php">Home</a>
               </li>
               <li>
-                  <a href="">TKH Webite</a>
+                  <a href="https://tkh.edu.eg">TKH Webite</a>
               </li>
               <?php if ($type == "admin"){ ?>
                 <li>
@@ -100,7 +107,7 @@ if (empty($current_id)){ ?>
       <a href="index.php">Home</a>
   </li>
   <li>
-      <a href="">TKH Webite</a>
+      <a href="https://tkh.edu.eg">TKH Webite</a>
   </li>
                 <?php if ($type == "admin"){ ?>
                 <li>

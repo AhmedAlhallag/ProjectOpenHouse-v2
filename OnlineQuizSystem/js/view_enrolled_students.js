@@ -1,65 +1,68 @@
 
 
-$(document).ready(()=>{
+$(document).ready(() => {
 
-        let current_cookie = document.cookie;
-        let current_userId = "" ; 
-        let current_type = "" ; 
-        current_userId = processCookie(current_cookie)[0];
-        current_type = processCookie(current_cookie)[1];
-        console.log("current_userID: ", current_userId);
-        console.log("current_type: ", current_type);
-        var code = $('#hiddenCode').val() ; 
-    
-         if (current_userId != null && current_type =="admin") {
-            //======================================================
-                var dataTable = $('#view_enrolled').DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "order" : [],
-                    "ajax" : {
-                        url: "view_enrolled_students_action.php",
-                        method:"POST",
-                        data:{action:'fetch', page:'view_enrolled_students',code:code}
-                    },
-                    "columnDefs":[
-                        {
-                            //NOTE: target will disable the ordering by column, so make sure what index is selected
-                            "orderable":false,
-                        },
-                    ]
-        
-                });
-        }
-    
+    let current_cookie = document.cookie;
+    let current_userId = "";
+    let current_type = "";
+    current_userId = processCookie(current_cookie)[0];
+    current_type = processCookie(current_cookie)[1];
+    console.log("current_userID: ", current_userId);
+    console.log("current_type: ", current_type);
+    var code = $('#hiddenCode').val();
+
+    if (current_userId != null && current_type == "admin") {
+        var curr_datetime = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
+        var timezone_name = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        //======================================================
+        var dataTable = $('#view_enrolled').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "ajax": {
+                url: "view_enrolled_students_action.php",
+                method: "POST",
+                data: { curr_datetime: curr_datetime, action: 'fetch', page: 'view_enrolled_students', code: code, timezone: timezone_name }
+            },
+            "columnDefs": [
+                {
+                    //NOTE: target will disable the ordering by column, so make sure what index is selected
+                    "orderable": false,
+                },
+            ]
+
+        });
+    }
+
 });
 
 // ======================= some functions ==========================
 
-function sendDataToPage(uri,form){
+function sendDataToPage(uri, form) {
     // probably a code smell having a default argumengt... REFACTOR
-    let formdata = new FormData(form); 
-    let api = axios.create({basicurl:'http://localhost:80'});
-    return api.post(uri,formdata);  
+    let formdata = new FormData(form);
+    let api = axios.create({ basicurl: 'http://52.7.174.33:80' });
+    return api.post(uri, formdata);
 }
 
 
-function sendDataToPage(uri,form,config){
-    var formdata = "";  
-    if (form){
-        formdata = new FormData(form); 
+function sendDataToPage(uri, form, config) {
+    var formdata = "";
+    if (form) {
+        formdata = new FormData(form);
     }
-    let api = axios.create({basicurl:'http://localhost:80'});
-    return api.post(uri,formdata,config );  
+    let api = axios.create({ basicurl: 'http://52.7.174.33:80' });
+    return api.post(uri, formdata, config);
 
 }
 
-function processCookie(current_cookie){
-    let current_userId = null ; 
-    let current_type = null ; 
-    let userValue = "" ;
-    let type = "" ;
-    if (current_cookie.split('; ').length > 2){
+function processCookie(current_cookie) {
+    let current_userId = null;
+    let current_type = null;
+    let userValue = "";
+    let type = "";
+    if (current_cookie.split('; ').length > 2) {
         // check who is where..
         if (current_cookie.split('; ')[1].indexOf('u') == 0) {// first element is userId
             userValue = current_cookie.split('; ')[1];
@@ -70,23 +73,23 @@ function processCookie(current_cookie){
         }
         // someone is logged in 
         // get user/admin id
-        userValue = '{' + userValue + '}' ; 
-        userValue = userValue.replace('=',':');
+        userValue = '{' + userValue + '}';
+        userValue = userValue.replace('=', ':');
         console.log(userValue);
         current_userId = eval(userValue);
 
         // type of logged in member
-        type = '{' + type + '}' ; 
-        type = type.replace('=',':');
-        let quoted_type = `'${type.slice(type.indexOf(":") +1, type.indexOf("}"))}'` ;
-        if (type.indexOf('u') != -1){
-            type = type.replace('user',quoted_type);
-        } 
-        else if (type.indexOf('a') != -1){
-            type = type.replace('admin',quoted_type);
+        type = '{' + type + '}';
+        type = type.replace('=', ':');
+        let quoted_type = `'${type.slice(type.indexOf(":") + 1, type.indexOf("}"))}'`;
+        if (type.indexOf('u') != -1) {
+            type = type.replace('user', quoted_type);
+        }
+        else if (type.indexOf('a') != -1) {
+            type = type.replace('admin', quoted_type);
         }
         current_type = eval(type);
-        return [current_userId,current_type];
-    } 
-        return [current_userId,current_type];
+        return [current_userId, current_type];
+    }
+    return [current_userId, current_type];
 }

@@ -1,6 +1,6 @@
 <?php
 
-$current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')));
+// $current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')));
 include('class/Examination.php');
 $exam = new Examination;
 
@@ -9,6 +9,11 @@ if (isset($_POST)){
     
 		if($_REQUEST['action'] == 'Add')
 		{
+			// $current_datetime = $_REQUEST['curr_datetime'];  k
+			$timezone = $_REQUEST['timezone'];  
+			$date = new DateTime("now", new DateTimeZone($timezone));
+    		$current_datetime = $date->format('Y-m-d H:i:s');
+
 			$exam->data = array(
 				':admin_id'				=>	$_SESSION['admin_id'],
 				':online_exam_title'	=>	$exam->clean_data($_POST['online_exam_title']),
@@ -31,7 +36,7 @@ if (isset($_POST)){
 			$lastId = $exam->execute_query_with_last_id();
 
 			// check exam status after addition and change it if needed
-			$exam->Check_exam_status_v2($lastId);
+			$exam->Check_exam_status_v2($lastId,$timezone);
 
             $debug = ["status" => "success", 'details' => "Exam Added."]; 
             // print_r($_POST);

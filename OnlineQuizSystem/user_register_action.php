@@ -109,6 +109,14 @@ $current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')
                     
                     $_SESSION['username'] = $row[0]['user_name'];
                     $_SESSION['user_email_address'] = $user_email_address;
+
+                    // $timezone_offset_minutes = intval($_REQUEST['timezone']);
+
+                    // $timezone_name = timezone_name_from_abbr("", $timezone_offset_minutes*60, false);
+                    $timezone_name = $_REQUEST['timezone'];
+
+                    $_SESSION['timezone'] =  $timezone_name ; 
+                    
                     echo json_encode($output); 
 
             } else if ($total_rows != 0) {

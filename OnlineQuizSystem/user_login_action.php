@@ -28,6 +28,9 @@ if ($_POST['action'] == 'login'){
             
             $_SESSION['username'] = $row[0]['user_name'];
             $_SESSION['user_email_address'] = $row[0]['user_email_address'];
+
+            $timezone_name = $_REQUEST['timezone'];
+            $_SESSION['timezone'] =  $timezone_name ; 
             echo json_encode($debug);
             
 

@@ -7,6 +7,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +41,18 @@
     $examObj->admin_session_public();  
 
     ?>
+
+    
+          <div class="fixed-action-btn click-to-toggle">
+            <a class="btn-floating btn-large red">
+              <i class="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+              <li><a class="btn-floating red circ" href="user_login.php">Login</a></li>
+              <li><a class="btn-floating green circ" href="https://tkh.edu.eg">TKH</a></li>
+              <li><a class="btn-floating blue circ" href="index.php">Home</a></li>
+            </ul>
+          </div>
 
     <div class="container">
     <h5>User Login</h5>
@@ -87,6 +101,8 @@
     <!-- <script src="../js/login_ajax.js"></script> -->
     <script src="js/user_login.js"></script>
     <script src="js/hammenu.js"></script>
+          <script src="js/clickFAB.js" type="text/javascript">      </script>
+
 
 </body>
 </html>

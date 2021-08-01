@@ -80,7 +80,7 @@ $exam = new Examination;
 
 				$result = '';
 
-				if($exam->Check_exam_status_v2($exam_id) == 'completed')
+				if($exam->Check_exam_status_v2($exam_id,$_POST['timezone']) == 'completed')
 				{
 					$result = '<a href="result_per_user_list.php?code='.$_POST['code'].'&id='.$row['user_id'].'" class="btn-small" target="_blank">Result</a>';
 				}

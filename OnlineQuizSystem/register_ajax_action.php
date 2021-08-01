@@ -6,7 +6,6 @@ $examObj = new Examination() ;
 $current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')));
 
 
-
     if ($_POST['action'] == 'default'){// default action: keyup email ajax request
 
             $email = trim($_POST['admin_email']) ;
@@ -30,6 +29,8 @@ $current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')
         } 
         
         else if ($_POST['action']=="register"){
+            // print_r($_POST);
+
             // print_r('registering...');
 
             //============= check email first 
@@ -57,7 +58,7 @@ $current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')
                     $admin_email_address = $_POST['admin_email'];
                     $admin_pass = password_hash($_POST['comfirm_admin_pass'],PASSWORD_DEFAULT);
                     $examObj->data = [":admin_email_address" => $admin_email_address, ":admin_password" => $admin_pass, ":admin_verification_code"=>$admin_ver_code, ':admin_created_on'=>	$current_datetime, ':admin_type'=>	'sub_master'] ;
-                    
+
 
                     $examObj->execute_query();
                     $output = ["status" => "registered"] ;
@@ -73,6 +74,14 @@ $current_datetime = date("Y-m-d") . ' ' . date("H:i:s", STRTOTIME(date('h:i:sa')
                     setcookie("type", $_SESSION['type'], time() + (86400 * 30), "/"); // 86400 = 1 day
                     
                     $_SESSION['admin_email_address'] = $admin_email_address;
+
+
+                    // $timezone_offset_minutes = intval($_REQUEST['timezone']);
+
+                    $timezone_name = $_REQUEST['timezone'];
+
+                    $_SESSION['timezone'] =  $timezone_name ; 
+
                     echo json_encode($output); 
 
             } else {

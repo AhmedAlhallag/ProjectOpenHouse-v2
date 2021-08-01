@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,8 +122,74 @@
 <?php 
     include('partials/nav.php');
     // $examObj->admin_session_public(); 
-    $examObj->Check_exam_status();
+    // $curr_date_time = "<script> document.write((new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ')) </script>" ; 
+
+?>
+
+
+          <div class="fixed-action-btn click-to-toggle">
+            <a class="btn-floating btn-large red">
+              <i class="large material-icons">mode_edit</i>
+            </a>
+            <ul>
+            <li><a class="btn-floating red circ" href="user_login.php">Login</a></li>
+              <li><a class="btn-floating green circ" href="https://tkh.edu.eg">TKH</a></li>
+              <li><a class="btn-floating blue circ" href="index.php">Home</a></li>
+            </ul>
+          </div>
+
+<!-- <script>
+
+function sendDataToPage(uri, form, config) {
+    var formdata = "";
+    if (form) {
+        formdata = new FormData(form);
+    }
+    let api = axios.create({ basicurl: 'http://52.7.174.33:80' });
+    return api.post(uri, formdata, config);
+}
+
+    (async function () {
+
+
+        var curr_datetime = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
+
+        let axioxParams = {
+            params: {
+                action: 'getDate',
+                curr_datetime: curr_datetime
+            }
+        };
+
+        await sendDataToPage('/rec_date.php', "", axioxParams)
+            .then(data => {
+                let status = data.data.status;
+                if (status == "success") {
+                    console.log(data.data);
+                    // document.cookie = `timestamp=${data.data.date}`;
+                    console.log('done');
+
+                    // document.getElementById('datee').value = data.data.date;
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+    })();
     
+</script> -->
+
+
+<?php
+
+    // $currDT = $examObj->get_current_date_time($current_id, $type) ; 
+    // $curr_date_time = $currDT[0]['curr_date_time']; 
+
+    // $date = new DateTime("now", new DateTimeZone($current_timezone));
+    // $curr_date_time = $date->format('Y-m-d H:i:s');
+    $examObj->Check_exam_status($current_timezone);
+
     // ============================================ 
     $exam_id = '';
     $exam_status = '';
@@ -150,6 +218,8 @@
 
         foreach($result as $row)
         {
+
+            
             $exam_title = $row['online_exam_title'];  
             $exam_status = $row['online_exam_status'];
             $exam_star_time = $row['online_exam_datetime'];
@@ -163,6 +233,8 @@
             // print_r($exam_end_time . "<br>");
             $remaining_minutes = strtotime($exam_end_time) - time();
             // print_r($remaining_minutes . "<br>");
+            // echo "current time: " . date("H:i:s" ,time()) . '<br>' ;
+            // echo "Timezone: " . $current_timezone;  
         }
 
         // get all question (rows' ids) for this user
@@ -271,8 +343,8 @@ else if($exam_status == 'Completed')
 			</div>
 		</div>
 		<div class="card-content">
-			<div class="responsive-table">
-				<table class="table highlight striped centered">
+			<div class="">
+				<table class="table highlight striped centered responsive-table">
 					<tr>
 						<th>Question</th>
 						<th>Option 1</th>
@@ -372,19 +444,27 @@ else if($exam_status == 'Completed')
 					";
 
 					$res = $examObj->query_result();
-
+                    
 					foreach($marks_result as $row)
 					{
-					?>
-					<tr>
-                            <td colspan="8"><b>Total Mark:</b></td>
-                            <td><mark style="color:red"> <b><?php echo $row["total_mark"]; ?></b> </mark style="color:red"> /<?php echo $res[0]['exam_total_mark']?></td>
-					</tr>
+                        ?>
+                    </table>
+                    <table class="striped centered responsive-table"">
+                    <tr>
+                            <td><b>Total Mark:</b></td>
+                    </tr>
+                    <tr>
+                        <td><mark style=""> <b> <span style="color:red""> <?php echo $row["total_mark"]; ?> </span> /<?php echo $res[0]['exam_total_mark']?>  </mark> </b></td>
+
+                    </tr>
+
+
+
+                    </table>
 					<?php	
 					}
 
 					?>
-				</table>
 			</div>
 		</div>
 	</div>
@@ -429,6 +509,8 @@ else if($exam_status == 'Completed')
 
     <script src="js/modalBox.js">  </script>
       <script src="js/hammenu.js">  </script>
+            <script src="js/clickFAB.js" type="text/javascript">      </script>
+
       <script src="js/TimeCircles.js"></script>
       <script src="js/view_exam.js"></script>
 
